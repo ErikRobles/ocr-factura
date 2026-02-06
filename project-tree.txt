@@ -1,0 +1,43 @@
+﻿
+FullName                                                                                
+--------                                                                                
+D:\Misc Dev\OCRFactura\.cursorindexingignore                                            
+D:\Misc Dev\OCRFactura\.pytest_cache\.gitignore                                         
+D:\Misc Dev\OCRFactura\.pytest_cache\CACHEDIR.TAG                                       
+D:\Misc Dev\OCRFactura\.pytest_cache\README.md                                          
+D:\Misc Dev\OCRFactura\.pytest_cache\v\cache\lastfailed                                 
+D:\Misc Dev\OCRFactura\.pytest_cache\v\cache\nodeids                                    
+D:\Misc Dev\OCRFactura\.specstory\.gitignore                                            
+D:\Misc Dev\OCRFactura\.specstory\.project.json                                         
+D:\Misc Dev\OCRFactura\.specstory\.what-is-this.md                                      
+D:\Misc Dev\OCRFactura\.specstory\history\2026-02-05_15-58Z-ocrfactura-milestone-1-ar...
+D:\Misc Dev\OCRFactura\app\__init__.py                                                  
+D:\Misc Dev\OCRFactura\app\main.py                                                      
+D:\Misc Dev\OCRFactura\core\__init__.py                                                 
+D:\Misc Dev\OCRFactura\core\chatgpt_batch_schema.py                                     
+D:\Misc Dev\OCRFactura\core\excel_export.py                                             
+D:\Misc Dev\OCRFactura\core\extract.py                                                  
+D:\Misc Dev\OCRFactura\core\merge_batches.py                                            
+D:\Misc Dev\OCRFactura\core\models.py                                                   
+D:\Misc Dev\OCRFactura\core\ocr_tesseract.py                                            
+D:\Misc Dev\OCRFactura\core\pipeline.py                                                 
+D:\Misc Dev\OCRFactura\core\retailer_guess.py                                           
+D:\Misc Dev\OCRFactura\core\retailer_registry.py                                        
+D:\Misc Dev\OCRFactura\core\retailers.json                                              
+D:\Misc Dev\OCRFactura\core\ticket_rules.py                                             
+D:\Misc Dev\OCRFactura\core\webui.py                                                    
+D:\Misc Dev\OCRFactura\deprecated\ocr.py                                                
+D:\Misc Dev\OCRFactura\deprecated\preprocess.py                                         
+D:\Misc Dev\OCRFactura\factura-images\WhatsApp Image 2026-02-05 at 1.53.45 PM.jpeg      
+D:\Misc Dev\OCRFactura\factura-images\WhatsApp Image 2026-02-05 at 10.02.32 AM.jpeg     
+D:\Misc Dev\OCRFactura\factura-images\WhatsApp Image 2026-02-05 at 10.03.00 AM.jpeg     
+D:\Misc Dev\OCRFactura\project-tree.txt                                                 
+D:\Misc Dev\OCRFactura\README.md                                                        
+D:\Misc Dev\OCRFactura\requirements.txt                                                 
+D:\Misc Dev\OCRFactura\spec\agent-prompt.md                                             
+D:\Misc Dev\OCRFactura\spec\specstory-v1.md                                             
+D:\Misc Dev\OCRFactura\tests\__init__.py                                                
+D:\Misc Dev\OCRFactura\tests\test_amount_normalization.py                               
+D:\Misc Dev\OCRFactura\tests\test_extract_patterns.py                                   
+
+

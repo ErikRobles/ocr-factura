@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "retailers": [
+    {
+      "id": "chedraui",
+      "display_name": "CHEDRAUI",
+      "aliases": ["TIENDAS CHEDRAUI", "CHEDRAUT", "CHEDRAUI"],
+      "rfc_prefixes": ["TCH850701"],
+      "keywords": ["CHEDRAUI", "CHEDRAUT", "Chedraui"],
+      "priority": 100
+    },
+    {
+      "id": "hm",
+      "display_name": "H&M",
+      "aliases": ["HENNES", "MAURITZ", "H & M"],
+      "rfc_prefixes": ["HAM"],
+      "keywords": ["HENNES", "MAURITZ", "HAM"],
+      "priority": 80
+    }
+  ]
+}
