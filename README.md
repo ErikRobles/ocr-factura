@@ -1,19 +1,16 @@
 # OCRFactura
 
-Local Windows desktop application that extracts Mexican retail ticket data from receipt images and generates a monthly facturación Excel spreadsheet.
+Local web application for Mexican retail receipt → facturación. You extract receipt data using **ChatGPT** (upload images there, paste the app's prompt), then paste the JSON into this app to validate, merge batches, and export a single Excel file. No OCR; no APIs or scraping.
 
-**Status:** V1 in development (Milestone 1 complete)
+**Status:** Option B in use (ChatGPT batch → JSON → merge → Excel).
 
 ## What it does
 
-- Reads all `.jpg`, `.jpeg`, `.png` images from a **single folder** (no recursion).
-- Runs **local OCR** (Tesseract), with optional preprocessing (grayscale, contrast).
-- Extracts fields: retailer, ticket/folio, date, total amount, payment method, facturación URL/email, etc.
-- Outputs a **.xlsx** workbook with:
-  - **Extracted** — one row per image, sorted by retailer then date then filename.
-  - **Needs_Review** — rows with missing key fields or low confidence.
-  - **Run_Summary** — counts and run info.
-- Clickable hyperlinks to the original image path in Excel.
+- **Web UI** (Flask, default port 5173): paste ChatGPT JSON batches, validate, add to session, merge all batches, export one `.xlsx`.
+- **Session storage**: one file per day under `output/sessions/session_YYYY-MM-DD.jsonl`.
+- **Excel export**: one workbook with sheets **Extracted**, **Needs_Review**, **Run_Summary**; clickable links to image paths when available.
+- **Visualize**: open a dark-themed dashboard of the exported Excel data (by retailer).
+- **Prompt**: the UI shows a copy-paste prompt to use in ChatGPT so it returns strict JSON (`batch_meta` + `rows`) for batch processing.
 
 ## Setup
 
@@ -30,27 +27,38 @@ Local Windows desktop application that extracts Mexican retail ticket data from 
    pip install -r requirements.txt
    ```
 
-3. **Tesseract OCR** must be installed on the system and on `PATH`:
-   - Download: [GitHub - tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-   - Or: `winget install UB-Mannheim.TesseractOCR`
-   - For Spanish + English: install the `spa` and `eng` language data (often included).
+   The web UI needs **Flask** and **openpyxl**. If `requirements.txt` does not list Flask, install it:
 
-## Run (CLI — Milestone 1)
+   ```bash
+   pip install flask openpyxl
+   ```
 
-From the project root (`OCRFactura`):
+   (No Tesseract or OCR setup required for the current flow.)
 
-```bash
-python -m app.main "C:\path\to\folder\with\receipt\images"
-```
+## Run
 
-Optional: specify output file:
+From the project root:
 
 ```bash
-python -m app.main "C:\path\to\folder" --output "C:\path\to\output\MonthlyInvoicing.xlsx"
+python -m app.main
 ```
 
-- Only images with extensions `.jpg`, `.jpeg`, `.png` in that folder are processed.
-- Default output: `MonthlyInvoicing_YYYY-MM_HHMMSS.xlsx` in the same folder.
+Optional port:
+
+```bash
+python -m app.main --port 5173
+```
+
+Then open the URL shown in the terminal (e.g. http://127.0.0.1:5173).
+
+## User flow
+
+1. Open the local web UI (`python -m app.main`).
+2. Copy the **ChatGPT prompt** from the page, then in ChatGPT upload 3–5 receipt images and send the prompt.
+3. ChatGPT returns a single JSON object (`batch_meta` + `rows`). Copy it (JSON only).
+4. Paste the JSON into the app and click **Add Batch**. Repeat for more batches.
+5. Click **Export Excel** to merge all batches, de-dupe, and write one `.xlsx` to `output/`.
+6. Use **Visualize** to open a dashboard of the exported data (if any Excel file exists in `output/`).
 
 ## Tests
 
@@ -61,31 +69,25 @@ pip install pytest
 python -m pytest tests/ -v
 ```
 
-Unit tests cover:
-
-- Amount normalization (`$1,234.50` → `1234.50`).
-- Amount parsing (total, subtotal, IVA).
-- Date parsing (dd/mm/yyyy, yyyy-mm-dd).
-- Transaction number (TR: xxx).
-- Ticket/folio and payment method extraction.
-- Facturación URL/email detection.
-- Full `extract_from_text` with empty and sample text.
+Tests cover amount normalization, date/amount/transaction extraction patterns, and `extract_from_text` behavior (used by legacy path; ChatGPT flow uses schema validation in `core/chatgpt_batch_schema.py`).
 
 ## Project structure
 
 ```
 OCRFactura/
   app/
-    main.py          # CLI entry
-    ui.py            # (Milestone 3: desktop UI)
+    main.py              # Entry point: runs web UI (Flask)
   core/
-    pipeline.py      # folder → OCR → extract → rows
-    preprocess.py    # image preprocessing
-    ocr.py           # Tesseract OCR (modular for PaddleOCR later)
-    extract.py       # regex + heuristics extraction
-    retailer_guess.py
-    excel_export.py  # .xlsx with 3 sheets and hyperlinks
-    models.py        # ExtractedRow dataclass
+    webui.py             # Flask app: paste JSON, Add Batch, Export Excel, Visualize
+    chatgpt_batch_schema.py  # Validate and normalize ChatGPT batch JSON
+    merge_batches.py     # Merge sessions, de-dupe, pick best fields
+    json_cleaner.py      # Repair pasted JSON (e.g. literal newlines in strings)
+    excel_export.py     # .xlsx with Extracted / Needs_Review / Run_Summary
+    models.py           # ExtractedRow and shared data structures
+    retailer_guess.py   # Retailer normalization / registry
+    extract.py          # Legacy regex extraction (optional)
+  output/
+    sessions/           # session_YYYY-MM-DD.jsonl
   tests/
     test_amount_normalization.py
     test_extract_patterns.py
@@ -93,15 +95,9 @@ OCRFactura/
   spec/
 ```
 
-## Manual testing before Milestone 2
+## Manual check
 
-1. Put 2–3 receipt images (JPG/PNG) in a folder.
-2. Run: `python -m app.main "path\to\that\folder"`.
-3. Open the generated .xlsx:
-   - **Extracted**: one row per image; key columns filled where OCR could read them.
-   - **Needs_Review**: rows with missing/low-confidence data.
-   - **Run_Summary**: total processed, needs-review count.
-   - Click **Image_Open_Link** (or Image_File_Path) to open the original image.
-4. If Tesseract is not on PATH, fix installation or add its directory to `PATH`.
-
-Next: **Milestone 2** — improved preprocessing (deskew, contrast, shadow reduction), confidence scoring.
+1. Run `python -m app.main` and open the URL.
+2. Copy the prompt from the page, open ChatGPT, upload 2–3 receipt images, send the prompt.
+3. Copy the JSON response (no markdown) into the app and click **Add Batch**.
+4. Click **Export Excel**, then open the file from `output/` and optionally use **Visualize**.
