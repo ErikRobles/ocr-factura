@@ -372,8 +372,10 @@ If you break JSON formatting → system fails.
 
 Proceed carefully."""
 
-# Where we persist a running session of pasted batches
-_REPO_ROOT = Path(__file__).resolve().parent.parent
+# Where we persist a running session of pasted batches (exe dir when frozen)
+from .paths import get_base_dir
+
+_REPO_ROOT = get_base_dir()
 _SESSION_DIR = _REPO_ROOT / "output" / "sessions"
 _OUTPUT_DIR = _REPO_ROOT / "output"
 _SESSION_DIR.mkdir(parents=True, exist_ok=True)

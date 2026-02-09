@@ -1,6 +1,9 @@
 # OCRFactura - Monthly Ticket Facturación Extractor (MX)
 # Python 3.10+
 
+# Web UI
+flask>=3.0.0
+
 # Excel output
 openpyxl>=3.1.0
 

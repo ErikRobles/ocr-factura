@@ -15,10 +15,14 @@ import argparse
 import sys
 from pathlib import Path
 
-# Run from repo root so that app and core are importable
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
+# Run from repo root (or exe dir when frozen) so that app and core are importable
+if getattr(sys, "frozen", False):
+    # PyInstaller: use folder containing exe for output/sessions; don't touch sys.path
+    _REPO_ROOT = Path(sys.executable).resolve().parent
+else:
+    _REPO_ROOT = Path(__file__).resolve().parent.parent
+    if str(_REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT))
 
 from core.webui import run_webui  # noqa: E402
 

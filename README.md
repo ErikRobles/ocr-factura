@@ -27,12 +27,6 @@ Local web application for Mexican retail receipt → facturación. You extract r
    pip install -r requirements.txt
    ```
 
-   The web UI needs **Flask** and **openpyxl**. If `requirements.txt` does not list Flask, install it:
-
-   ```bash
-   pip install flask openpyxl
-   ```
-
    (No Tesseract or OCR setup required for the current flow.)
 
 ## Run
@@ -92,8 +86,42 @@ OCRFactura/
     test_amount_normalization.py
     test_extract_patterns.py
   requirements.txt
+  OCRFactura.spec   # PyInstaller spec for Windows exe
+  run_ocrfactura.py # Launcher for built exe
+  build.bat         # Build script for Windows exe
+  create-shortcut.ps1  # Create Desktop shortcut (no console)
+  RunOCRFactura.vbs    # Launcher used by shortcut (no console)
+  GUIA-USUARIO.md      # Short end-user guide (include in dist folder)
   spec/
 ```
+
+## Distribution (Windows exe)
+
+To give the app to someone who does not have Python installed:
+
+1. **Build the exe** (on your dev machine, from project root with venv activated):
+
+   ```bash
+   pip install -r requirements-build.txt
+   build.bat
+   ```
+
+   Or: `python -m PyInstaller OCRFactura.spec --noconfirm`
+
+2. **Copy the folder** `dist\OCRFactura` to the user's computer. The folder contains:
+   - `OCRFactura.exe` — run directly to see the console (status; closing it stops the app)
+   - `RunOCRFactura.vbs` — used by the shortcut to start the app **without** showing the console
+   - `create-shortcut.ps1` — run once to create a Desktop shortcut (shortcut uses the VBS, so no console)
+   - `GUIA-USUARIO.md` — short end-user guide (give this to the user)
+   - Other DLLs and files (required; do not delete)
+
+3. **Desktop shortcut (recommended):**  
+   In the `OCRFactura` folder, right-click `create-shortcut.ps1` → **Run with PowerShell**.  
+   The shortcut runs the app via `RunOCRFactura.vbs`, so **no console window** appears—only the browser opens.
+
+4. **User experience:**
+   - **Shortcut:** Double-click the Desktop shortcut → browser opens; no terminal. To stop the app they use Task Manager (end `OCRFactura.exe`) or close the browser and leave it running in the background.
+   - **Exe directly:** Double-click `OCRFactura.exe` → console window + browser. Closing the console stops the app. Sessions and exported Excel files are in `output/` and `output/sessions/` inside that folder.
 
 ## Manual check
 
