@@ -2,6 +2,8 @@
 
 Local web application for Mexican retail receipt → facturación. You extract receipt data using **ChatGPT** (upload images there, paste the app's prompt), then paste the JSON into this app to validate, merge batches, and export a single Excel file. No OCR; no APIs or scraping.
 
+This application is in beta and is "AS IS" - No guarantee it will work on your system. If you want to contribute to make this application better, please fork or issue a PR.
+
 **Status:** Option B in use (ChatGPT batch → JSON → merge → Excel).
 
 ## What it does
@@ -95,33 +97,56 @@ OCRFactura/
   spec/
 ```
 
-## Distribution (Windows exe)
+## Standalone deployment (Windows exe, no Python required)
 
-To give the app to someone who does not have Python installed:
+You can run OCRFactura as a **standalone app** on any Windows PC without installing Python or an IDE. Build once on your dev machine, then copy the built folder to the target PC.
 
-1. **Build the exe** (on your dev machine, from project root with venv activated):
+### Step 1: Build the standalone (developer, one time)
 
-   ```bash
-   pip install -r requirements-build.txt
-   build.bat
-   ```
+On your development machine, from the project root with the virtual environment activated:
 
-   Or: `python -m PyInstaller OCRFactura.spec --noconfirm`
+**Command Prompt (Windows):**
 
-2. **Copy the folder** `dist\OCRFactura` to the user's computer. The folder contains:
-   - `OCRFactura.exe` — run directly to see the console (status; closing it stops the app)
-   - `RunOCRFactura.vbs` — used by the shortcut to start the app **without** showing the console
-   - `create-shortcut.ps1` — run once to create a Desktop shortcut (shortcut uses the VBS, so no console)
-   - `GUIA-USUARIO.md` — short end-user guide (give this to the user)
-   - Other DLLs and files (required; do not delete)
+```cmd
+cd /d "d:\Misc Dev\OCRFactura"
+.venv\Scripts\activate
+pip install -r requirements-build.txt
+build.bat
+```
 
-3. **Desktop shortcut (recommended):**  
-   In the `OCRFactura` folder, right-click `create-shortcut.ps1` → **Run with PowerShell**.  
-   The shortcut runs the app via `RunOCRFactura.vbs`, so **no console window** appears—only the browser opens.
+**Git Bash:** use `cmd //c build.bat` instead of `build.bat`, or run:
 
-4. **User experience:**
-   - **Shortcut:** Double-click the Desktop shortcut → browser opens; no terminal. To stop the app they use Task Manager (end `OCRFactura.exe`) or close the browser and leave it running in the background.
-   - **Exe directly:** Double-click `OCRFactura.exe` → console window + browser. Closing the console stops the app. Sessions and exported Excel files are in `output/` and `output/sessions/` inside that folder.
+```bash
+python -m PyInstaller OCRFactura.spec --noconfirm
+```
+
+When the build finishes, the standalone app is in **`dist\OCRFactura`** (inside the project folder). That folder contains everything needed to run the app.
+
+### Step 2: Deploy to the target machine
+
+1. Copy the **entire** `dist\OCRFactura` folder to the computer where the app will run (e.g. USB drive, shared folder, or zip and transfer).
+2. Place it where you want (e.g. `C:\Program Files\OCRFactura` or the user's Desktop). Do not rename or remove any files inside the folder.
+3. **(Optional)** Create a Desktop shortcut so the user can open the app without a console window:
+   - Open the `OCRFactura` folder.
+   - Right-click **create-shortcut.ps1** → **Run with PowerShell**.
+   - A shortcut named **OCRFactura** will appear on the Desktop.
+
+### Step 3: Run the standalone app
+
+- **From the shortcut (recommended):** Double-click the **OCRFactura** shortcut on the Desktop. The browser opens to the app; no console window. To stop the app, use Task Manager and end **OCRFactura.exe**, or leave it running in the background.
+- **From the folder:** Open the `OCRFactura` folder and double-click **OCRFactura.exe**. A console window and the browser will open. Closing the console window stops the app.
+
+Exported Excel files and session data are stored in **`output\`** and **`output\sessions\`** inside that same folder. Give users the **GUIA-USUARIO.md** file in the folder as a short guide.
+
+### What’s in the standalone folder
+
+| Item                  | Purpose                                        |
+| --------------------- | ---------------------------------------------- |
+| `OCRFactura.exe`      | Main app; double-click to run (shows console). |
+| `RunOCRFactura.vbs`   | Used by the shortcut to run without a console. |
+| `create-shortcut.ps1` | Run once to create the Desktop shortcut.       |
+| `GUIA-USUARIO.md`     | End-user guide (Spanish).                      |
+| Other files/DLLs      | Required; do not delete.                       |
 
 ## Manual check
 
