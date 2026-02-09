@@ -1,1 +1,4 @@
 factura-images/
+.specstory/
+# local tooling logs
+.specstory/
